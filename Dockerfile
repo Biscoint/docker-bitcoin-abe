@@ -13,7 +13,7 @@ CMD ["/sbin/my_init"]
 
 # install python
 RUN apt-get -yqq update 
-RUN apt-get -yqq install git sqlite sudo wget python-dev python-flup python-crypto
+RUN apt-get -yqq install git sqlite sudo wget python-dev python-flup python-crypto python-psycopg2
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -28,11 +28,11 @@ ADD ./bitcoinabe.abe.py.patch /home/bitcoin-abe/abe.py.patch
 RUN patch -p1 < abe.py.patch
 RUN python setup.py install
 
-ADD ./sqlite.conf /home/bitcoin-abe/
-ADD ./run.server.sh /home/bitcoin-abe/
+ADD ./abe-pg.conf /home/bitcoin-abe/
+ADD ./run.server.pg.sh /home/bitcoin-abe/
 
-RUN chmod 755 /home/bitcoin-abe run.server.sh
+RUN chmod 755 /home/bitcoin-abe run.server.pg.sh
 
 EXPOSE 80
 
-CMD ["/home/bitcoin-abe/run.server.sh"]
+CMD ["/home/bitcoin-abe/run.server.pg.sh"]
